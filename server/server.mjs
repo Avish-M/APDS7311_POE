@@ -2,7 +2,6 @@ import express from "express";
 import cors from "cors";
 import "./loadEnvironment.mjs";
 import https from "https";
-import path from "path";
 import fs from "fs";
 import dotenv from "dotenv";
 dotenv.config();
@@ -27,13 +26,24 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+
+app.use((reg,res,next)=>
+{
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Headers', '*');
+    res.setHeader('Access-Control-Allow-Methods', '*');
+    next();
+})
+
 app.use("/record", records);
 app.use("/user",users);
+
+
 
 let server = https.createServer(options,app)
 
 app.get('/record',(req,res)=>{
- // res.send('HTTPS in ExpressJS')
+  res.send('HTTPS in ExpressJS')
 })
 
 // start the Express server

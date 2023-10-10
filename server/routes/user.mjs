@@ -27,7 +27,7 @@ router.get("/:id", async (req, res) => {
   let query = {_id: new ObjectId(req.params.id)};
   let result = await collection.findOne(query);
 
-  if (!result) res.send("Not found").status(404);
+  if (!result) res.send("Not found :(").status(404);
   else res.send(result).status(200);
 });
 
@@ -50,6 +50,7 @@ router.patch("/:id", async (req, res) => {
     $set: {
       name: req.body.name,
       password: (await password).toString(),  // does not work of not converted,
+      position: req.body.position,
       level: req.body.level
     }
   };
@@ -90,40 +91,33 @@ router.post("/signup", async (req, res) => {
 
 
 // Login
-router.post("/login",bruteforce.prevent, async(req, res) => {
-  const {name, password} = req.body;
+router.post("/login",bruteforce.prevent, async (req, res) => {
+  const { name, password } = req.body;
 
-
-   try{
-    const collection = await  db.collection("users");
+  try {
+    const collection = await db.collection("users");
     const user = await collection.findOne({ name });
 
-   if(!user) {
-  
-
-    return res.status(401).json({ message: "Authencation failed :("});
-   }
-
-   // compare the provided password with the hashed password in the database
-   const passwordMatch = await bcrypt.compare(password, user.password);
-
-
-   if(!passwordMatch)
-   {
-
-    return res.status(401).json({ message: "Authencation failed :("});
-
-   }
-
-  //Authencation successful
-   res.status(200).json({ message: "Authencation successful :)"});
-   const token = jwt.sign({username:req.body.username, password: req.body.password}, "this_secret_should_be_longer_than_it_is", {expiresIn: "1h"})
-        console.log("THE NEW TOKEN IS :", token)
-    }catch(error)
-    {
-        console.error("login error:", error);
-        res.status(500).json({message: "Login failed :("});
+    if (!user) {
+      return res.status(401).json({ message: "Authentication failed :(" });
     }
-  });
+
+    // Compare the provided password with the hashed password in the database
+    const passwordMatch = await bcrypt.compare(password, user.password);
+
+    if (!passwordMatch) {
+      return res.status(401).json({ message: "Authentication failed :(" });
+    }
+
+    // Authentication successful
+
+    const token = jwt.sign({username:req.body.username, password  : req.body.password},"this_secret_should_be_longer_than_it_is",{expiresIn:"1h"})
+    console.log("YOUR NEW WEB TOKEN IS :", token)
+    res.status(200).json({ message: "Authentication successful :)", message : token });
+  } catch (error) {
+    console.error("Login error:", error);
+    res.status(500).json({ message: "Login failed :(" });
+  }
+});
 
 export default router;

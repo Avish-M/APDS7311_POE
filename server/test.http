@@ -5,10 +5,11 @@ GET https://localhost:4040/user HTTP/1.1
 
 
 ###
-GET https://localhost:4040/ HTTP/1.1
+GET http://localhost:4040/user HTTP/1.1
 
 ###
 GET https://localhost:4040/record HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXNzd29yZCI6InN0cm9uZ3Bhc3N3b3JkIiwiaWF0IjoxNjk2ODYzMTA5LCJleHAiOjE2OTY4NjY3MDl9.Vmt3xZaxWgo2YZ_bNuhvAtKDzlTj3r-QNFtopSe6oF4
 
 
 
@@ -38,11 +39,10 @@ content-Type: application/json
 }
 
 
-// UPDATES THE USER
+// UPDATES THE USER AND HASHES THE PASSWORD AGAIN IN THE USER.MJS, HAVE TO PASS THE USER ID IN
 
 ###
-
-PATCH https://localhost:4040/record/651f45afbbb23a55ada50f8f HTTP/1.1
+PATCH https://localhost:4040/user/65242db01e79568238e79c19 HTTP/1.1
 Content-Type: application/json
 
 {
@@ -54,11 +54,29 @@ Content-Type: application/json
 }
 
 
-//DELETES THE USER
+//DELETES THE USER BY PASSING THE USER ID
 
 ###
-DELETE https://localhost:4040/record/651f4610bbb23a55ada50f92 HTTP/1.1
+DELETE https://localhost:4040/user/65242db01e79568238e79c19 HTTP/1.1
 Content-Type: application/json
 
 
+
+
+//CREATES A NEW RECORD FOR THAT USER BY PASSING TOKEN
+###
+POST https://localhost:4040/record/create HTTP/1.1
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXNzd29yZCI6InN0cm9uZ3Bhc3N3b3JkIiwiaWF0IjoxNjk2ODYzMTA5LCJleHAiOjE2OTY4NjY3MDl9.Vmt3xZaxWgo2YZ_bNuhvAtKDzlTj3r-QNFtopSe6oF4
+
+{
+    "name": "newRecord"
+}
+
+
+// DELETES THE RECORD ONLY BY PASSING ID AND TOKEN
+###
+DELETE https://localhost:4040/record/6524333f1e79568238e79c1a HTTP/1.1
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXNzd29yZCI6InN0cm9uZ3Bhc3N3b3JkIiwiaWF0IjoxNjk2ODYzMTA5LCJleHAiOjE2OTY4NjY3MDl9.Vmt3xZaxWgo2YZ_bNuhvAtKDzlTj3r-QNFtopSe6oF4
 
